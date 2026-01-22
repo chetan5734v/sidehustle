@@ -6,7 +6,9 @@ import Landing from '../components/Landing'
 import {Route, Routes} from 'react-router-dom'
 import Signin from '../components/signin'
 import Signup from '../components/signup'
-import Profile from '../components/profile'
+import Profileform from '../components/profileform'
+import ProfilePage from '../components/profilepage'
+// import Profile from '../components/profile'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -18,7 +20,9 @@ function App() {
        <Route path="/" element={<Landing/>}/>
        <Route path="/signin" element={<Signin/>} />
        <Route path="/signup" element={<Signup/>} />
-       <Route path="/profile" element={<Profile/>} />
+       <Route path="/profileform" element={<Profileform/>} />
+       <Route path="/profilepage" element={<ProfilePage/>} />
+       {/* <Route path="/profile" element={<Profile/>} /> */}
       </Routes>
     
     </>

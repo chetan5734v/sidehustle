@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Signin() {
     const [username,setUsername]=useState("");
     const [password,setPassword]=useState("");
+    const [profilestatus,setprofilestatus]=useState(false)
     const navigate= useNavigate();
    async function handlesignin(e){
         e.preventDefault();
@@ -12,8 +13,15 @@ function Signin() {
           await  axios.post("http://localhost:9000/login" , {
         username:username,
         password:password
-        });
-        navigate("/profile")
+        },{withCredentials:true}).then((res=>{
+            setprofilestatus(res.data.isProfileCompleted)
+        }));
+        if(!profilestatus){
+          navigate("/profileform")
+        }
+        else{
+          navigate("/profilepage")
+        }
         }
         catch(error){
             alert("something went wrong");

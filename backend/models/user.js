@@ -9,6 +9,18 @@ const userSchema= new mongoose.Schema({
     password:{
         type: String,
         required: true
-    }
+    },
+    profile:{
+    title: String,
+    bio: String,
+    skills: [String],
+    experienceLevel: String,
+    hourlyRate: Number,
+    
+    },
+    isProfileCompleted:Boolean,
+    createdAT:Date,
+    updatedAt:Date
+   
 })
 module.exports= mongoose.model("User", userSchema);

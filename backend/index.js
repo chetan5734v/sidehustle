@@ -7,7 +7,10 @@ const User=require("./models/user");
 const jwt= require("jsonwebtoken");
 const jwt_secret="chetanpandey";
 const cookiepsarser= require("cookie-parser")
- app.use(cors());
+ app.use(cors({
+    origin: "http://localhost:5173", // your frontend
+  credentials: true
+ }));
 app.use(express.json());
 app.use(cookiepsarser());
 
@@ -24,17 +27,22 @@ app.get('/',(req,res)=>{
 })
 
 app.post('/signup', async (req,res)=>{
-    const {username, password}= req.body;
-    if(!username || !password){
+    const {username, password,isProfileCompleted}= req.body;
+    try{
+        if(!username || !password){
         return res.status(400).send("fill all the details")
     }
     const existingUser= await User.findOne({username});
     if(existingUser){
         return res.status(400).send("user already exists");
     }
-    const newUser= new User({username, password});
+    const newUser= new User({username, password ,isProfileCompleted});
     await newUser.save();
     res.status(201).send("user created successfully");  
+    }
+    catch(error){
+        console.log(error);
+    }
 
 
 });
@@ -50,7 +58,7 @@ app.post('/login', async(req,res)=>{
     
    const token=  jwt.sign(
         {
-            userId:username
+            userId:user._id
         },
         jwt_secret,
         {
@@ -60,11 +68,14 @@ app.post('/login', async(req,res)=>{
     );
     res.cookie("token",token,{
         httpOnly:true,
-        secure:true,
-        sameSite:"strict",
+        secure:false,
+        sameSite:"lax",
         maxAge:60*60*1000
     })
-    res.status(200).send("logged in successfully");
+    res.status(200).json({
+        message:"logged in successfully",
+        isProfileCompleted:user.isProfileCompleted
+    });
   }
   else{
     res.status(400).send("wrong password")
@@ -75,10 +86,10 @@ app.post('/login', async(req,res)=>{
   }
 
 })
-function AuthMiddlewarr(req,res,next){
- const token= res.cookie.token;
+function AuthMiddleware(req,res,next){
+ const token= req.cookies.token;
  if(!token){
-    res.send("login first");
+   return res.send("login first");
  }
  try{
     const decoded= jwt.verify(token,jwt_secret);
@@ -87,15 +98,37 @@ function AuthMiddlewarr(req,res,next){
 
  }
  catch(err){
-    res.status(400).json({"message":"invalid token"});
+  return  res.status(400).json({"message":"invalid token"});
  }
 
 }
 
 
+app.post("/updateprofile",AuthMiddleware, async (req,res)=>{
 
+   try{
+     const {title,bio,skills,hourlyrate,experience}= req.body;
+    const userId= req.user.userId;
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          "profile.title": title,
+          "profile.bio": bio,
+          "profile.skills": skills,
+          "profile.experienceLevel": experience,
+          "profile.hourlyRate": hourlyrate,
+          isProfileCompleted: true
+        }
+      },
+      { new: true }
+    );
+   }
+   catch(error){
+    console.log(error.message)
+   }
 
-
+})
 
 
 app.listen(9000,()=>{
