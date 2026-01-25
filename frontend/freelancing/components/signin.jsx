@@ -5,31 +5,32 @@ import { useNavigate } from "react-router-dom";
 function Signin() {
     const [username,setUsername]=useState("");
     const [password,setPassword]=useState("");
-    const [profilestatus,setprofilestatus]=useState(false)
-    const navigate= useNavigate();
-   async function handlesignin(e){
-        e.preventDefault();
-        try{
-          await  axios.post("http://localhost:9000/login" , {
-        username:username,
-        password:password
-        },{withCredentials:true}).then((res=>{
-            setprofilestatus(res.data.isProfileCompleted)
-        }));
-        if(!profilestatus){
-          navigate("/profileform")
-        }
-        else{
-          navigate("/profilepage")
-        }
-        }
-        catch(error){
-            alert("something went wrong");
-        }
-            
-        
-    }
     
+    const navigate= useNavigate();
+  async function handlesignin(e) {
+  e.preventDefault();
+
+  try {
+    const res = await axios.post(
+      "http://localhost:9000/login",
+      {
+        username,
+        password
+      },
+      { withCredentials: true }
+    );
+
+    if (res.data.isProfileCompleted) {
+      navigate("/profilepage");
+    } else {
+      navigate("/profileform");
+    }
+
+  } catch (error) {
+    alert("something went wrong");
+  }
+}
+
 
 
   return (

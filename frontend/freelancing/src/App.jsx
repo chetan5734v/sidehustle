@@ -8,6 +8,7 @@ import Signin from '../components/signin'
 import Signup from '../components/signup'
 import Profileform from '../components/profileform'
 import ProfilePage from '../components/profilepage'
+import Jobs from '../components/jobs'
 // import Profile from '../components/profile'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
        <Route path="/signup" element={<Signup/>} />
        <Route path="/profileform" element={<Profileform/>} />
        <Route path="/profilepage" element={<ProfilePage/>} />
+       <Route path='/jobs' element={<Jobs />}  />
        {/* <Route path="/profile" element={<Profile/>} /> */}
       </Routes>
     

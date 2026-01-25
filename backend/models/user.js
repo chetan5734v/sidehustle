@@ -11,11 +11,12 @@ const userSchema= new mongoose.Schema({
         required: true
     },
     profile:{
+    name:String,
     title: String,
     bio: String,
     skills: [String],
     experienceLevel: String,
-    hourlyRate: Number,
+    hourlyRate: String,
     
     },
     isProfileCompleted:Boolean,

@@ -107,12 +107,13 @@ function AuthMiddleware(req,res,next){
 app.post("/updateprofile",AuthMiddleware, async (req,res)=>{
 
    try{
-     const {title,bio,skills,hourlyrate,experience}= req.body;
+     const {title,bio,skills,hourlyrate,experience,name}= req.body;
     const userId= req.user.userId;
     await User.findByIdAndUpdate(
       userId,
       {
         $set: {
+          "profile.name":name,
           "profile.title": title,
           "profile.bio": bio,
           "profile.skills": skills,
@@ -123,6 +124,7 @@ app.post("/updateprofile",AuthMiddleware, async (req,res)=>{
       },
       { new: true }
     );
+    res.json({isProfileCompleted:true});
    }
    catch(error){
     console.log(error.message)
@@ -130,6 +132,22 @@ app.post("/updateprofile",AuthMiddleware, async (req,res)=>{
 
 })
 
+app.get("/profile",AuthMiddleware, async (req,res)=>{
+ try{
+  const id=req.user.userId;
+  console.log(id);
+ const user=  await User.findById(id).select("-password");
+ if(!user){
+   return res.status(404).send("user not found")
+ }
+ res.status(200).json(user);
+ }
+ catch(error){
+  res.status(500).send("server error")
+ }
+
+}
+)
 
 app.listen(9000,()=>{
     console.log("server running on port 9000")
