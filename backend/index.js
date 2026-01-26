@@ -6,7 +6,9 @@ const cors= require("cors");
 const User=require("./models/user");
 const jwt= require("jsonwebtoken");
 const jwt_secret="chetanpandey";
-const cookiepsarser= require("cookie-parser")
+const cookiepsarser= require("cookie-parser");
+const { default: jobDB } = require("./db/jobsdb");
+const Job =require("../backend/models/job").default;
  app.use(cors({
     origin: "http://localhost:5173", // your frontend
   credentials: true
@@ -148,6 +150,27 @@ app.get("/profile",AuthMiddleware, async (req,res)=>{
 
 }
 )
+app.post("/createjob", AuthMiddleware, async (req,res)=>{
+    const user= await User.findById(req.user.userId).select("-password")
+    const createdby= user.username;
+   const {title, description,budgetmin,budgetmax,skills  }= req.body;
+    const newJob = await Job.create({
+      title,
+      createdby: user.username,
+      description,
+      budgetmin,
+      budgetmax,
+      type: "remote",
+      skills,
+    });
+
+    res.status(201).json({
+      message: "✅ Job created successfully",
+      job: newJob,
+    });
+
+})
+
 
 app.listen(9000,()=>{
     console.log("server running on port 9000")

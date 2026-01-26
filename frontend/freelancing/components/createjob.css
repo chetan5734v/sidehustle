@@ -1,0 +1,29 @@
+.job-form {
+  max-width: 420px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.job-form input,
+.job-form select,
+.job-form textarea {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+}
+
+.budget {
+  display: flex;
+  gap: 10px;
+}
+
+.job-form button {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}

@@ -1,0 +1,83 @@
+.job-card {
+  width: 320px;
+  background: white;
+  border: solid rgb(21, 21, 21) 2px;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  font-family: Arial, sans-serif;
+   transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.job-card:hover{
+    transform: scale(1.1);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.job-title {
+  font-size: 18px;
+  margin: 0;
+}
+
+.job-type {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.company-name {
+  color: #555;
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.job-desc {
+  font-size: 14px;
+  color: #333;
+  margin: 10px 0;
+}
+
+.skills span {
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+.job-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.budget {
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.apply-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.apply-btn:hover {
+  background: #1e40af;
+}
+.job-container{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+    padding: 20px;
+}

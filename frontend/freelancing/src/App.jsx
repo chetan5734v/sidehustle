@@ -9,6 +9,7 @@ import Signup from '../components/signup'
 import Profileform from '../components/profileform'
 import ProfilePage from '../components/profilepage'
 import Jobs from '../components/jobs'
+import CreateJob from '../components/createjob'
 // import Profile from '../components/profile'
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
        <Route path="/profileform" element={<Profileform/>} />
        <Route path="/profilepage" element={<ProfilePage/>} />
        <Route path='/jobs' element={<Jobs />}  />
+       <Route path="/createjob" element={<CreateJob/>} />
        {/* <Route path="/profile" element={<Profile/>} /> */}
       </Routes>
     

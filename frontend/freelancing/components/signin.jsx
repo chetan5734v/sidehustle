@@ -21,7 +21,7 @@ function Signin() {
     );
 
     if (res.data.isProfileCompleted) {
-      navigate("/profilepage");
+      navigate("/jobs");
     } else {
       navigate("/profileform");
     }
