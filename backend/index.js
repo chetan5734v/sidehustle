@@ -5,10 +5,15 @@ const app= express();
 const cors= require("cors");
 const User=require("./models/user");
 const jwt= require("jsonwebtoken");
+
+const websocket=require("ws");
+
 const jwt_secret="chetanpandey";
 const cookiepsarser= require("cookie-parser");
 const { default: jobDB } = require("./db/jobsdb");
+const { json } = require("stream/consumers");
 const Job =require("../backend/models/job").default;
+
  app.use(cors({
     origin: "http://localhost:5173", // your frontend
   credentials: true
@@ -22,7 +27,37 @@ mongoose.connect('mongodb://localhost:27017/usersDB').then
 }).catch((err)=>{
     console.log("error connecting to mongoDB", err);
 });
+const server= http.createServer(app);
+const wss=  new  websocket.Server({server});
 
+const users= new Map();
+wss.on("connection", (ws) => {
+  console.log("WebSocket client connected");
+
+  ws.on("message", (data) => {
+    const msg = JSON.parse(data);
+
+    if (msg.type === "register") {
+      users.set(msg.userId, ws);
+      ws.userId = msg.userId;
+      return;
+    }
+
+    if (msg.type === "message") {
+      const receiver = users.get(msg.to);
+      if (receiver) {
+        receiver.send(JSON.stringify({
+          from: msg.from,
+          message: msg.message
+        }));
+      }
+    }
+  });
+
+  ws.on("close", () => {
+    users.delete(ws.userId);
+  });
+});
 
 app.get('/',(req,res)=>{
     res.send("hello from server");
@@ -91,7 +126,7 @@ app.post('/login', async(req,res)=>{
 function AuthMiddleware(req,res,next){
  const token= req.cookies.token;
  if(!token){
-   return res.send("login first");
+   return res.status(401).send("login first");
  }
  try{
     const decoded= jwt.verify(token,jwt_secret);
@@ -153,15 +188,16 @@ app.get("/profile",AuthMiddleware, async (req,res)=>{
 app.post("/createjob", AuthMiddleware, async (req,res)=>{
     const user= await User.findById(req.user.userId).select("-password")
     const createdby= user.username;
-   const {title, description,budgetmin,budgetmax,skills  }= req.body;
+   const {title, description,budgetMin,budgetMax,skills  }= req.body;
     const newJob = await Job.create({
       title,
       createdby: user.username,
       description,
-      budgetmin,
-      budgetmax,
+      budgetMin,
+      budgetMax,
       type: "remote",
       skills,
+
     });
 
     res.status(201).json({
@@ -171,8 +207,20 @@ app.post("/createjob", AuthMiddleware, async (req,res)=>{
 
 })
 
+app.get("/alljobs",async (req,res)=>{
+   try{
+    const jobs=  await Job.find();
+    res.status(200).json(jobs);
 
-app.listen(9000,()=>{
+   }
+   catch(err){
+    
+    console.log(err);
+   }
+
+})
+
+server.listen(9000,()=>{
     console.log("server running on port 9000")
 })
 

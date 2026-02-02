@@ -1,44 +1,68 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Jobcard from "../cards/jobcard";
-import { useNavigate } from 'react-router-dom';
-function Jobs(){
-    const navigate= useNavigate();
-    function post(){
-     
-     navigate("/createjob")
-    }
-    return(
-        <>
-        <div style={{border:"solid grey 2px", display:"flex", justifyContent:"space-between"}}>
-            <div style={{paddingLeft:"10px"}}>
-                <h1>Freelancer</h1>
-            </div>
-            <div style={{ display:"flex"}}>
-                 <form style={{paddingTop:"15px"}} >
-                    <input style={{height:"10px"}} type="text" placeholder="Search..."  />
-                 <button style={{height:"30px" , width:"50px"}} type="submit">Find</button>
-                 </form>
-                 </div>
-           
-        </div>
-        <div className="job-container">
-             <div><Jobcard/></div>
-              <div><Jobcard/></div>
-               <div><Jobcard/></div>
-                <div><Jobcard/></div>
-                 <div><Jobcard/></div>
-                  <div><Jobcard/></div>
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-        </div>
-        <div>
-           <button onClick={post}>Post a job</button>
-        </div>
-       
-        
-        
-        </>
-        
-         
-    );
+function Jobs() {
+  const navigate = useNavigate();
+  const [jobs, setJobs] = useState([]);
+
+  function post() {
+    navigate("/createjob");
+  }
+
+  useEffect(() => {
+    async function getJobs() {
+      try {
+        const res = await axios.get("http://localhost:9000/alljobs");
+        setJobs(res.data);
+      } catch (error) {
+        alert("Something went wrong while fetching jobs");
+        console.error(error);
+      }
+    }
+    getJobs();
+  }, []);
+
+  return (
+    <>
+      {/* Header */}
+      <div
+        style={{
+          border: "2px solid grey",
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "0 20px",
+          alignItems: "center",
+        }}
+      >
+        <h1>Freelancer</h1>
+
+        <form>
+          <input
+            type="text"
+            placeholder="Search..."
+            style={{ height: "30px", marginRight: "6px" }}
+          />
+          <button type="submit" style={{ height: "34px" }}>
+            Find
+          </button>
+        </form>
+      </div>
+
+      {/* Job cards */}
+      <div className="job-container">
+        {jobs.map((job) => (
+          <Jobcard key={job._id} job={job} />
+        ))}
+      </div>
+
+      {/* Post Job */}
+      <div style={{ textAlign: "center", margin: "20px" }}>
+        <button onClick={post}>Post a job</button>
+      </div>
+    </>
+  );
 }
+
 export default Jobs;

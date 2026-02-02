@@ -1,31 +1,41 @@
 import React from "react";
-import './jobcard.css'
-function Jobcard(){
-    return(
-        <div class="job-card">
-  <div class="job-header">
-    <h3 class="job-title">Frontend Developer</h3>
-    <span class="job-type">Remote</span>
-  </div>
+import "./jobcard.css";
+import { useNavigate } from "react-router-dom";
 
-  <p class="company-name">StartupX Technologies</p>
+function Jobcard({ job }) {
+  const navigate= useNavigate();
+   function apply(){
+    
+    navigate("/chat")
+   }
 
-  <p class="job-desc">
-    Looking for a React developer to build responsive UI components.
-  </p>
+  return (
+    <div className="job-card">
+      <div className="job-header">
+        <h3 className="job-title" title={job.title}>
+          {job.title}
+        </h3>
+        <span className="job-type">{job.type}</span>
+      </div>
 
-  <div class="skills">
-    <span>React</span>
-    <span>JavaScript</span>
-    <span>CSS</span>
-  </div>
+      <p className="company-name">Posted by {job.createdby}</p>
 
-  <div class="job-footer">
-    <span class="budget">₹30,000 – ₹50,000</span>
-    <button class="apply-btn">Apply</button>
-  </div>
-</div>
+      <p className="job-desc">{job.description}</p>
 
-    );
+      <div className="skills">
+        {job.skills.map((skill, index) => (
+          <span style={{color:"black"}}  key={index}>{skill}</span>
+        ))}
+      </div>
+
+      <div className="job-footer">
+        <span className="budget">
+          ₹{job.budgetMin} – ₹{job.budgetMax}
+        </span>
+        <button onClick={apply} className="apply-btn">Apply</button>
+      </div>
+    </div>
+  );
 }
+
 export default Jobcard;
